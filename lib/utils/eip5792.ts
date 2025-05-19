@@ -5,13 +5,18 @@ import type { OnUpdate } from './allowances';
 import type { TokenAllowanceData } from './allowances';
 
 export type Eip5792Call = Call;
+// viem has a issue with typing the capability. Until they fix it, we manually define it.
+export interface Capabilities {
+  [key: string]: any;
+}
 
 export const walletSupportsEip5792 = async (walletClient: WalletClient) => {
   try {
-    const capabilities = await walletClient.getCapabilities();
+    const capabilities = (await walletClient.getCapabilities()) as Capabilities;
     console.log('Wallet supports EIP5792:', capabilities);
 
     // We might even need to check the exact capabilities, but we'll deal with that if we need to
+
     if (capabilities[walletClient.chain!.id]) return true;
 
     console.log(`Wallet does not support EIP5792 on chain ${walletClient.chain!.id}`);
